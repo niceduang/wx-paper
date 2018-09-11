@@ -14,7 +14,7 @@
         </view>
       </view>
       <view class="create-ctrls-options">
-        <view class="inner" bindtap='queryType' data-index="{{index}}">
+        <view class="inner" bindtap='queryType' data-index="{{index}}" data-type="-1">
           <view class="icon icon-pic" data-type="1"></view>
           <view class="icon icon-text" data-type="0"></view>
           <view class="icon icon-video" data-type="2"></view>
@@ -28,7 +28,7 @@
           <video src="{{item.content}}" controls objectFit="fill"></video>
         </view>
         <view wx:else class="container-txt">
-          <textarea maxlength="-1" bindinput='typing' data-index='{{index}}' value='{{item.content}}' />
+          <textarea maxlength="-1" bindinput='typing' data-index='{{index}}' focus='{{focus==index}}' value='{{item.content}}' />
         </view>
         <view class="mask">
           <view class="mask-icons" data-index="{{index}}" bindtap='change'>

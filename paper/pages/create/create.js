@@ -2,24 +2,47 @@
 const app = getApp();
 Page({
   data: {
+    focus:-1,
+    id:'',
     // 1-pic,0-txt,2-video
     cardlist: [
       {
         status: 0,
         type: -1,
         content: ''
-      },
-      // {
-      //   status: 2,
-      //   type: 0,
-      //   content: 'text-test-test'
-      // }
+      }
     ]
   },
   onLoad: function (options) {
     app.getSkey(skey => {
       this.setData({
         skey
+      },()=>{
+        let id = options.id || '';
+        // console.log('id:', id);
+        if(id.length<=0){return;}
+        this.setData({
+          id
+        });
+        wx.request({
+          url: app.data.URI + 'cipher/'+id,
+          header:{
+            'X-WX-Skey':this.data.skey,
+            'X-WX-Flag':1
+          },
+          success:(res)=>{
+            let cardlist = res.data.data.cardlist;
+            for (let i = 0; i < cardlist.length; i++) {
+              cardlist[i].status = 2;
+            }
+            this.setData({
+              cardlist
+            });
+          },
+          fail: (error) => {
+            console.log('get id', error);
+          }
+        });
       });
     });
   },
@@ -33,6 +56,7 @@ Page({
   },
   queryType(e) {
     let type = e.target.dataset.type;
+    if (type==-1){return;}
     let index = e.currentTarget.dataset.index;
 
     let _status = `cardlist[${index}].status`;
@@ -45,46 +69,15 @@ Page({
     switch (type) {
       case '0':
         console.log(index, type, 'txt');
+        this.focus(index);
         break;
       case '1':
         console.log(index, type, 'pic');
-        wx.chooseImage({
-          count: 1,
-          success: res => {
-            let tempFilePaths = res.tempFilePaths
-            console.log(tempFilePaths);
-            this.upload(tempFilePaths[0], url => {
-              console.log(url);
-              let _content = `cardlist[${index}].content`;
-              this.setData({
-                [_content]: url
-              });
-            });
-          },
-          fail: error => {
-            console.log('chooseImage', error);
-            this.del(index);
-          }
-        });
+        this.choseImage(index);
         break;
       case '2':
         console.log(index, type, 'video');
-        wx.chooseVideo({
-          success:res=>{
-            let tempFilePath = res.tempFilePath;
-            this.upload(tempFilePath, url => {
-              console.log(url);
-              let _content = `cardlist[${index}].content`;
-              this.setData({
-                [_content]: url
-              });
-            });
-          },
-          fail: error => {
-            console.log('chose-video', error);
-            this.del(index);
-          }
-        });
+        this.choseVideo(index);
         break;
     }
   },
@@ -105,9 +98,21 @@ Page({
   },
   reset(index) {
     console.log(index, 'reset');
+    let type = this.data.cardlist[index].type;
+    switch(type){
+      case '1':
+        this.choseImage(index);
+        break;
+      case '2':
+        this.choseVideo(index);
+        break;
+    }
   },
   focus(index) {
     console.log(index, 'focus');
+    this.setData({
+      focus:index
+    });
   },
   del(index) {
     let cardlist = this.data.cardlist;
@@ -128,10 +133,11 @@ Page({
     });
   },
   addCard(e) {
-    console.log(e)
+    console.log(e);
     let index = e.currentTarget.dataset.index;
     let cardlist = this.data.cardlist;
     console.log(index, 'addCard');
+    this.initOps();
     if (index == 0 && e.currentTarget.dataset.pos == "top") {
       cardlist.unshift({
         status: 1,
@@ -163,6 +169,55 @@ Page({
     let _content = `cardlist[${index}].content`;
     this.setData({
       [_content]: val
+    });
+  },
+  initOps(){
+    let cardlist = this.data.cardlist;
+    for (let i = 0; i < cardlist.length; i++) {
+      if (cardlist[i].status!=2) {
+        cardlist.splice(i, 1);
+      }
+    }
+    this.setData({
+      cardlist
+    });
+  },
+  choseImage(index){
+    wx.chooseImage({
+      count: 1,
+      success: res => {
+        let tempFilePaths = res.tempFilePaths
+        console.log(tempFilePaths);
+        this.upload(tempFilePaths[0], url => {
+          console.log(url);
+          let _content = `cardlist[${index}].content`;
+          this.setData({
+            [_content]: url
+          });
+        });
+      },
+      fail: error => {
+        console.log('chooseImage', error);
+        this.del(index);
+      }
+    });
+  },
+  choseVideo(index){
+    wx.chooseVideo({
+      success: res => {
+        let tempFilePath = res.tempFilePath;
+        this.upload(tempFilePath, url => {
+          console.log(url);
+          let _content = `cardlist[${index}].content`;
+          this.setData({
+            [_content]: url
+          });
+        });
+      },
+      fail: error => {
+        console.log('chose-video', error);
+        this.del(index);
+      }
     });
   },
   upload(filePath, cb) {
@@ -198,9 +253,17 @@ Page({
     cardlist = _cardlist;
     console.log('cardlist:',cardlist);
     console.log('制作完成，可以发送');
+    let id = this.data.id;// 是编辑
+    let url = app.data.URI + 'cipher/';
+    let method = 'POST';
+    if(id){
+      console.log('is editor:', id);
+      method = 'PUT';
+      url = url + id;
+    }
     wx.request({
-      url: app.data.URI + 'cipher',
-      method: 'POST',
+      url,
+      method,
       header: {
         // 'Content-Type': 'application/x-www-form-urlencoded',
         'X-WX-Flag': 1,
