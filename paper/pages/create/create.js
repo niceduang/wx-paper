@@ -2,8 +2,8 @@
 const app = getApp();
 Page({
   data: {
-    focus:-1,
-    id:'',
+    focus: -1,
+    id: '',
     // 1-pic,0-txt,2-video
     cardlist: [
       {
@@ -17,23 +17,24 @@ Page({
     app.getSkey(skey => {
       this.setData({
         skey
-      },()=>{
+      }, () => {
         let id = options.id || '';
         // console.log('id:', id);
-        if(id.length<=0){return;}
+        if (id.length <= 0) { return; }
         this.setData({
           id
         });
         wx.request({
-          url: app.data.URI + 'cipher/'+id,
-          header:{
-            'X-WX-Skey':this.data.skey,
-            'X-WX-Flag':1
+          url: app.data.URI + 'cipher/' + id,
+          header: {
+            'X-WX-Skey': this.data.skey,
+            'X-WX-Flag': 1
           },
-          success:(res)=>{
+          success: (res) => {
             let cardlist = res.data.data.cardlist;
             for (let i = 0; i < cardlist.length; i++) {
               cardlist[i].status = 2;
+              delete cardlist[i]['_id'];
             }
             this.setData({
               cardlist
@@ -56,7 +57,7 @@ Page({
   },
   queryType(e) {
     let type = e.target.dataset.type;
-    if (type==-1){return;}
+    if (type == -1) { return; }
     let index = e.currentTarget.dataset.index;
 
     let _status = `cardlist[${index}].status`;
@@ -99,7 +100,7 @@ Page({
   reset(index) {
     console.log(index, 'reset');
     let type = this.data.cardlist[index].type;
-    switch(type){
+    switch (type) {
       case '1':
         this.choseImage(index);
         break;
@@ -111,7 +112,7 @@ Page({
   focus(index) {
     console.log(index, 'focus');
     this.setData({
-      focus:index
+      focus: index
     });
   },
   del(index) {
@@ -171,10 +172,10 @@ Page({
       [_content]: val
     });
   },
-  initOps(){
+  initOps() {
     let cardlist = this.data.cardlist;
     for (let i = 0; i < cardlist.length; i++) {
-      if (cardlist[i].status!=2) {
+      if (cardlist[i].status != 2) {
         cardlist.splice(i, 1);
       }
     }
@@ -182,7 +183,7 @@ Page({
       cardlist
     });
   },
-  choseImage(index){
+  choseImage(index) {
     wx.chooseImage({
       count: 1,
       success: res => {
@@ -202,7 +203,7 @@ Page({
       }
     });
   },
-  choseVideo(index){
+  choseVideo(index) {
     wx.chooseVideo({
       success: res => {
         let tempFilePath = res.tempFilePath;
@@ -225,14 +226,14 @@ Page({
       url: app.data.URI + 'upload',
       filePath: filePath,
       name: filePath,
-      success:res => {
+      success: res => {
         console.log(res);
         // console.log(JSON.parse(res.data));
         let url = JSON.parse(res.data).data.url;
         cb && cb(url);
       },
-      fail:(error) => {
-        console.log('upload',error);
+      fail: (error) => {
+        console.log('upload', error);
       }
     });
   },
@@ -251,12 +252,12 @@ Page({
     });
     // cardlist = JSON.stringify(_cardlist);
     cardlist = _cardlist;
-    console.log('cardlist:',cardlist);
+    console.log('cardlist:', cardlist);
     console.log('制作完成，可以发送');
-    let id = this.data.id;// 是编辑
+    let id = this.data.id;// 有 id 携带，则是编辑
     let url = app.data.URI + 'cipher/';
     let method = 'POST';
-    if(id){
+    if (id) {
       console.log('is editor:', id);
       method = 'PUT';
       url = url + id;
@@ -272,14 +273,14 @@ Page({
       data: cardlist,
       success: res => {
         console.log(res);
-        if (res.data.code!=0){
+        if (res.data.code != 0) {
           return;
         }
         let num = res.data.data.code;
         wx.showToast({
           title: '制作完成',
-          icon:'success',
-          success:()=>{
+          icon: 'success',
+          success: () => {
             wx.navigateTo({
               url: '/pages/result/result?num=' + num
             });

@@ -12,11 +12,11 @@ App({
   },
   onLaunch: function () {
     wx.checkSession({
-      success:()=> {
+      success: () => {
         console.log('有效期内,无需再次登录');
         // session_key 未过期，并且在本生命周期一直有效
       },
-      fail:()=> {
+      fail: () => {
         console.log('有效期外');
         // session_key 已经失效，需要重新执行登录流程
         this.login();
@@ -28,7 +28,7 @@ App({
     wx.login({
       success(res) {
         if (res.code) {
-          console.log('res.code:',res.code);
+          console.log('res.code:', res.code);
           // 发起网络请求
           wx.request({
             url: This.data.URI + 'wxlogin',
@@ -41,7 +41,7 @@ App({
             success: res => {
               console.log('success', res.data);
               let skey = res.data.data.skey;
-              console.log('skey:',skey);
+              console.log('skey:', skey);
               wx.setStorage({
                 key: "skey",
                 data: skey
@@ -64,7 +64,7 @@ App({
     wx.getStorage({
       key: 'skey',
       success: res => {
-        console.log('skey:',res.data);
+        console.log('skey:', res.data);
         cb && cb(res.data);
       }
     });
