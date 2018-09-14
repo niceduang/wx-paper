@@ -281,6 +281,7 @@ Page({
           title: '制作完成',
           icon: 'success',
           success: () => {
+            console.log('num:'+num);
             wx.navigateTo({
               url: '/pages/result/result?num=' + num
             });

@@ -58,30 +58,11 @@ Page({
     });
   },
   edit(index) {
-    console.log('edit', index);
     let id = this.data.list[index].id;
+    console.log('edit', index,id);
     wx.navigateTo({
       url: '/pages/create/create?id=' + id
     });
-    // wx.request({
-    //   url: app.data.URI + 'cipher/' + id,
-    //   header: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //     'X-WX-Flag': 1,
-    //     'X-WX-Skey': this.data.skey
-    //   },
-    //   method: 'PUT',
-    //   success: (res) => {
-    //     console.log(res.data);
-    //     // let cardlist;
-    //     // wx.navigateTo({
-    //     //   url: '/pages/create/create?cardlist=' + cardlist
-    //     // });
-    //   },
-    //   fail: (error) => {
-    //     console.log('edit', error);
-    //   }
-    // });
   },
   see(index) {
     console.log('see', index);
