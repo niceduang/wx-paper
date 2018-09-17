@@ -1,6 +1,7 @@
 // pages/me/me.js
 import {
-  formatTime
+  formatTime,
+  send
 } from '../../utils/util.js';
 const app = getApp();
 Page({
@@ -15,7 +16,7 @@ Page({
       // }
     ]
   },
-  onLoad: function (options) {
+  onLoad: function(options) {
     app.getSkey(skey => {
       this.setData({
         skey
@@ -59,7 +60,7 @@ Page({
   },
   edit(index) {
     let id = this.data.list[index].id;
-    console.log('edit', index,id);
+    console.log('edit', index, id);
     wx.navigateTo({
       url: '/pages/create/create?id=' + id
     });

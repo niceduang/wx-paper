@@ -5,22 +5,22 @@ Page({
     focus: -1,
     id: '',
     // 1-pic,0-txt,2-video
-    cardlist: [
-      {
-        status: 0,
-        type: -1,
-        content: ''
-      }
-    ]
+    cardlist: [{
+      status: 0,
+      type: -1,
+      content: ''
+    }]
   },
-  onLoad: function (options) {
+  onLoad: function(options) {
     app.getSkey(skey => {
       this.setData({
         skey
       }, () => {
         let id = options.id || '';
         // console.log('id:', id);
-        if (id.length <= 0) { return; }
+        if (id.length <= 0) {
+          return;
+        }
         this.setData({
           id
         });
@@ -30,7 +30,7 @@ Page({
             'X-WX-Skey': this.data.skey,
             'X-WX-Flag': 1
           },
-          success: (res) => {
+          success: res => {
             let cardlist = res.data.data.cardlist;
             for (let i = 0; i < cardlist.length; i++) {
               cardlist[i].status = 2;
@@ -40,7 +40,7 @@ Page({
               cardlist
             });
           },
-          fail: (error) => {
+          fail: error => {
             console.log('get id', error);
           }
         });
@@ -57,7 +57,9 @@ Page({
   },
   queryType(e) {
     let type = e.target.dataset.type;
-    if (type == -1) { return; }
+    if (type == -1) {
+      return;
+    }
     let index = e.currentTarget.dataset.index;
 
     let _status = `cardlist[${index}].status`;
@@ -134,7 +136,7 @@ Page({
     });
   },
   addCard(e) {
-    console.log(e);
+    // console.log(e);
     let index = e.currentTarget.dataset.index;
     let cardlist = this.data.cardlist;
     console.log(index, 'addCard');
@@ -232,7 +234,7 @@ Page({
         let url = JSON.parse(res.data).data.url;
         cb && cb(url);
       },
-      fail: (error) => {
+      fail: error => {
         console.log('upload', error);
       }
     });
@@ -254,7 +256,7 @@ Page({
     cardlist = _cardlist;
     console.log('cardlist:', cardlist);
     console.log('制作完成，可以发送');
-    let id = this.data.id;// 有 id 携带，则是编辑
+    let id = this.data.id; // 有 id 携带，则是编辑
     let url = app.data.URI + 'cipher/';
     let method = 'POST';
     if (id) {
@@ -281,7 +283,7 @@ Page({
           title: '制作完成',
           icon: 'success',
           success: () => {
-            console.log('num:'+num);
+            console.log('num:' + num);
             wx.navigateTo({
               url: '/pages/result/result?num=' + num
             });

@@ -2,22 +2,22 @@
 const app = getApp();
 Page({
   data: {
-    num:12580
+    num: 12580
   },
-  onLoad: function (options) {
+  onLoad: function(options) {
     console.log(options);
     let num = options.num;
     this.setData({
       num
     });
   },
-  copy(){
+  copy() {
     // console.log(this.data.num);
     wx.setClipboardData({
       data: this.data.num.toString(),
-      success: function (res) {
+      success: function(res) {
         wx.getClipboardData({
-          success: function (res) {
+          success: function(res) {
             console.log(res.data); // data
             wx.showToast({
               title: '已复制',
@@ -29,7 +29,7 @@ Page({
       }
     });
   },
-  toHome(){
+  toHome() {
     wx.navigateTo({
       url: '../index/index'
     });

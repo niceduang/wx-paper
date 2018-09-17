@@ -10,7 +10,7 @@ App({
   data: {
     URI
   },
-  onLaunch: function () {
+  onLaunch: function() {
     wx.checkSession({
       success: () => {
         console.log('有效期内,无需再次登录');
@@ -42,7 +42,8 @@ App({
               console.log('success', res.data);
               let skey = res.data.data.skey;
               console.log('skey:', skey);
-              wx.setStorage({
+              // wx.setStorage({
+              wx.setStorageSync({
                 key: "skey",
                 data: skey
               });

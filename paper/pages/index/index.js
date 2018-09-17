@@ -6,7 +6,7 @@ Page({
   data: {
     val: ''
   },
-  onLoad: function (options) {
+  onLoad: function(options) {
     app.getSkey(skey => {
       this.setData({
         skey
@@ -15,21 +15,25 @@ Page({
   },
   initVal(e) {
     let val = e.detail.value;
-    this.setData({ val });
+    this.setData({
+      val
+    });
   },
   search() {
     // console.log(this.data.val);
     let num = this.data.val;
-    if (!num){return;}
+    if (!num) {
+      return;
+    }
     wx.request({
       url: app.data.URI + 'cipher_open/' + num,
       header: {
         'X-WX-Flag': 1,
         'X-WX-Skey': this.data.skey
       },
-      success: (res) => {
+      success: res => {
         console.log(res.data);
-        if (!res.data.data){
+        if (!res.data.data) {
           wx.showToast({
             title: '无此暗号',
             icon: 'none'
@@ -44,7 +48,7 @@ Page({
           val: ''
         });
       },
-      fail: (error) => {
+      fail: error => {
         console.log(error);
       }
     });
