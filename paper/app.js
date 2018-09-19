@@ -42,8 +42,8 @@ App({
               console.log('success', res.data);
               let skey = res.data.data.skey;
               console.log('skey:', skey);
-              // wx.setStorage({
-              wx.setStorageSync({
+              wx.setStorage({
+              // wx.setStorageSync({
                 key: "skey",
                 data: skey
               });
