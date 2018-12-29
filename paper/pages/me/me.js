@@ -1,8 +1,5 @@
 // pages/me/me.js
-import {
-  formatTime,
-  send
-} from '../../utils/util.js';
+import {formatTime} from '../../utils/util.js';
 const app = getApp();
 Page({
   data: {

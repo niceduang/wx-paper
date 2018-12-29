@@ -14,15 +14,6 @@ const formatNumber = n => {
   return n[1] ? n : '0' + n
 }
 
-// 发请求
-const send = () => {
-  let promise = new Promise((resolve, reject) => {
-    // 
-  });
-  return promise;
-}
-
 module.exports = {
-  formatTime,
-  send
+  formatTime
 }
